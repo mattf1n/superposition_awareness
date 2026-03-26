@@ -1,7 +1,3 @@
-[build-system]
-requires = ["hatchling>=1.27.0"]
-build-backend = "hatchling.build"
-
 [project]
 name = "superposition-awareness"
 version = "0.1.0"
@@ -14,8 +10,5 @@ dependencies = [
   "transformers>=4.56.0",
 ]
 
-[tool.hatch.build.targets.wheel]
-packages = ["src/superposition_awareness"]
-
 [tool.uv]
-package = true
+package = false

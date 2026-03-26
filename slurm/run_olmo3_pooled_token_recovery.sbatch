@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=olmo3-visible-token-detect
+#SBATCH --job-name=olmo3-pool-recover
 #SBATCH --output=logs/%x-%j.out
 #SBATCH --error=logs/%x-%j.err
 #SBATCH --time=04:00:00
@@ -9,8 +9,12 @@
 
 set -euo pipefail
 
-SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-REPO_ROOT=$(cd "$SCRIPT_DIR/.." && pwd)
+if [[ -n "${SLURM_SUBMIT_DIR:-}" ]]; then
+  REPO_ROOT="$SLURM_SUBMIT_DIR"
+else
+  SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+  REPO_ROOT=$(cd "$SCRIPT_DIR/.." && pwd)
+fi
 
 cd "$REPO_ROOT"
 mkdir -p logs results
@@ -26,6 +30,6 @@ export HF_HOME="${HF_HOME:-$HOME/.cache/huggingface}"
 export HF_HUB_ENABLE_HF_TRANSFER=1
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 
-uv run python experiments/olmo3_visible_tokenization_detection.py "$@"
+uv run python experiments/olmo3_pooled_token_recovery.py "$@"
 
 echo "[job] finished=$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
