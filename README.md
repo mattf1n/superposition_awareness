@@ -50,18 +50,17 @@ This is the original OLMo pooled-token recovery path, preserved alongside the OL
 Batch script:
 - `slurm/run_olmo_pooled_token_recovery.sbatch`
 
-Historical result summary:
-- Here, `broad` means a wider tokenizer-clean pool: any lowercase token that round-tripped cleanly as a single token was eligible.
-- `2026-03-13`, broad tokenizer-clean run, job `2865689`
-- Single-token control: `21/24` exact
+#### Historical result summary:
+
+Wider tokenizer-clean pool: any lowercase token that round-tripped cleanly as a single token was eligible.
+
 - Mean-pooled two-token recovery: `1/24` exact
 - Max-pooled two-token recovery: `1/24` exact
 - The only exact recovered pooled pair in that run was `ell, ack` in both mean and max modes.
 - Result file: `results/olmo_pooled_token_recovery_20260313T180055Z.json`
 
-- Here, `strict` means a curated common-word-only pool: only the hand-picked common lowercase words in the script were eligible.
-- `2026-03-13`, stricter common-word rerun, job `2865710`
-- Single-token control: `12/12` exact
+Curated common-word-only pool: only the hand-picked common lowercase words in the script were eligible.
+
 - Mean-pooled two-token recovery: `0/12` exact
 - Max-pooled two-token recovery: `4/12` exact
 - The exact recovered max-pooled pairs were `music, metal`, `glass, brown`, `spring, apple`, and `paper, cloud`.
@@ -81,8 +80,6 @@ Batch script:
 - `slurm/run_olmo3_pooled_token_recovery.sbatch`
 
 Latest result summary:
-- `2026-03-26` rerun, job `3045250`
-- Single-token control: `23/24` exact
 - Mean-pooled two-token recovery: `0/24` exact
 - Max-pooled two-token recovery: `2/24` exact
 - The only exact recovered max-pooled pairs were `monkey, stone` and `money, queen`.
