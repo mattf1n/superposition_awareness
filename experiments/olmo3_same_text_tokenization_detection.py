@@ -1,8 +1,6 @@
 import argparse
 import json
 import random
-import re
-import sys
 from collections import defaultdict
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
@@ -11,9 +9,7 @@ from pathlib import Path
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-sys.path.append(str(Path(__file__).resolve().parent))
-
-from olmo3_tokenization_detection import LABELS, normalize_text, select_texts
+from superposition_awareness.tokenization import LABELS, normalize_text, select_texts
 
 
 TEXT_SLOT = "[[[TEXT_SLOT]]]"
@@ -170,6 +166,8 @@ def main() -> None:
     args = parse_args()
     random.seed(args.seed)
     torch.manual_seed(args.seed)
+    Path("logs").mkdir(parents=True, exist_ok=True)
+    args.output_dir.mkdir(parents=True, exist_ok=True)
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     dtype = torch.bfloat16 if device.type == "cuda" else torch.float32
@@ -218,7 +216,6 @@ def main() -> None:
 
     summary = summarize(results)
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    args.output_dir.mkdir(parents=True, exist_ok=True)
     output_path = args.output_dir / f"olmo3_same_text_tokenization_detection_{timestamp}.json"
     payload = {
         "timestamp_utc": timestamp,

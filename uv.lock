@@ -815,7 +815,7 @@ wheels = [
 [[package]]
 name = "superposition-awareness"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "accelerate" },
     { name = "safetensors" },

@@ -324,6 +324,8 @@ def main() -> None:
     args = parse_args()
     random.seed(args.seed)
     torch.manual_seed(args.seed)
+    Path("logs").mkdir(parents=True, exist_ok=True)
+    args.output_dir.mkdir(parents=True, exist_ok=True)
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     dtype = torch.bfloat16 if device.type == "cuda" else torch.float32
@@ -374,7 +376,6 @@ def main() -> None:
 
     summary = summarize(results)
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    args.output_dir.mkdir(parents=True, exist_ok=True)
     output_path = args.output_dir / f"olmo3_pooled_sequence_recovery_{timestamp}.json"
     payload = {
         "timestamp_utc": timestamp,

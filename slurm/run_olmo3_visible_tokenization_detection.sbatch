@@ -2,8 +2,6 @@
 #SBATCH --job-name=olmo3-visible-token-detect
 #SBATCH --output=logs/%x-%j.out
 #SBATCH --error=logs/%x-%j.err
-#SBATCH --account=swabhas_1625
-#SBATCH --partition=nlp_hiprio
 #SBATCH --time=04:00:00
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G
@@ -11,7 +9,10 @@
 
 set -euo pipefail
 
-cd /home1/mfinlays/superposition_awareness
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+REPO_ROOT=$(cd "$SCRIPT_DIR/.." && pwd)
+
+cd "$REPO_ROOT"
 mkdir -p logs results
 
 echo "[job] host=$(hostname)"

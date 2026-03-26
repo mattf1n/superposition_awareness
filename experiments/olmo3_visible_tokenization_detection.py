@@ -1,8 +1,6 @@
 import argparse
 import json
 import random
-import re
-import sys
 from collections import defaultdict
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
@@ -11,15 +9,7 @@ from pathlib import Path
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-sys.path.append(str(Path(__file__).resolve().parent))
-
-from olmo3_tokenization_detection import (
-    LABELS,
-    TEXT_CANDIDATES,
-    decode_piece,
-    normalize_text,
-    select_texts,
-)
+from superposition_awareness.tokenization import LABELS, decode_piece, normalize_text, select_texts
 
 
 @dataclass
@@ -215,6 +205,8 @@ def main() -> None:
     args = parse_args()
     random.seed(args.seed)
     torch.manual_seed(args.seed)
+    Path("logs").mkdir(parents=True, exist_ok=True)
+    args.output_dir.mkdir(parents=True, exist_ok=True)
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     dtype = torch.bfloat16 if device.type == "cuda" else torch.float32
@@ -234,7 +226,7 @@ def main() -> None:
     model.eval()
 
     texts = select_texts(tokenizer, args.num_texts, args.seed)
-    print(f"[info] selected {len(texts)} texts from {len(TEXT_CANDIDATES)} candidates", flush=True)
+    print(f"[info] selected {len(texts)} texts", flush=True)
 
     results: list[TrialResult] = []
     for text_spec in texts:
@@ -263,7 +255,6 @@ def main() -> None:
 
     summary = summarize(results)
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    args.output_dir.mkdir(parents=True, exist_ok=True)
     output_path = args.output_dir / f"olmo3_visible_tokenization_detection_{timestamp}.json"
     payload = {
         "timestamp_utc": timestamp,
